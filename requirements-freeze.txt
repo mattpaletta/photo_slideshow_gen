@@ -1,0 +1,15 @@
+cffi==1.13.2
+Click==7.0
+dlib==19.19.0
+face-recognition==1.2.3
+face-recognition-models==0.3.0
+lxml==4.4.2
+numpy==1.17.4
+opencv-python==4.1.2.30
+Pillow==6.2.1
+pycparser==2.19
+pyheif==0.3.2
+python-pptx==0.6.18
+tqdm==4.40.2
+whatimage==0.0.3
+XlsxWriter==1.2.6

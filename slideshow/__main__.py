@@ -7,6 +7,8 @@ from PIL import Image
 import os
 import cv2
 import sys
+from pkg_resources import resource_filename
+
 
 def detectFaces(gray,loadedCascade):
     for orientation in range(4): # 4 shots
@@ -58,25 +60,27 @@ def detectBrightest(image):
         # return the winner
         return (360 - returns[winning]) / 90
 
+def get_haar_cascade(name):
+    if os.path.exists(os.path.join("haarcascades", name)):
+        path = os.path.join("haarcascades", name)
+    else:
+        path = resource_filename("slideshow", "haarcascades/" + name)
+    return cv2.CascadeClassifier(path)
+
+# Get more at: https://code.ros.org/svn/opencv/tags/latest_tested_snapshot/opencv/data/haarcascades/
+# Listed in order most likely to appear in a photo
+cascades = list(map(get_haar_cascade, ["haarcascade_frontalface_alt.xml", "haarcascade_profileface.xml", "haarcascade_fullbody.xml"]))
+
 # Try a couple different detection methods
 def trydetect(path):
     CV_LOAD_IMAGE_GRAYSCALE = 0
     # Load some things that we'll use during each loop so we don't keep re-creating them
     image = cv2.imread(path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # Get more at: https://code.ros.org/svn/opencv/tags/latest_tested_snapshot/opencv/data/haarcascades/
-    cascades = ( # Listed in order most likely to appear in a photo
-        '/usr/local/share/haarcascade_frontalface_alt.xml',
-        '/usr/local/share/haarcascade_profileface.xml',
-        '/usr/local/share/haarcascade_fullbody.xml',
-    )
-    cascades = os.listdir("haarcascades")
     for cascade in cascades:
-        if cascade in ["haarcascade_frontalface_alt.xml", "haarcascade_profileface.xml", "haarcascade_fullbody.xml"]:
-            loadedCascade = cv2.CascadeClassifier(os.path.join("haarcascades", cascade))
-            orientation, found_faces = detectFaces(gray, loadedCascade)
-            if found_faces:
-                return orientation
+        orientation, found_faces = detectFaces(gray, cascade)
+        if found_faces:
+            return orientation
     return detectBrightest(gray) # no faces found, use the brightest side for orientation instead
 
 def decodeHEICImage(bytesIo):
