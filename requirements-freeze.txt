@@ -6,7 +6,7 @@ face-recognition-models==0.3.0
 lxml==4.6.2
 numpy==1.17.4
 opencv-python==4.1.2.30
-Pillow==7.1.0
+Pillow==9.3.0
 pycparser==2.19
 pyheif==0.3.2
 python-pptx==0.6.18
